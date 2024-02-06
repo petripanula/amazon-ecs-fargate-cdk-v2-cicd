@@ -90,7 +90,7 @@ export class EcsCdkStack extends cdk.Stack {
 
     taskDef.addToExecutionRolePolicy(executionRolePolicy);
 
-    const baseImage = 'public.ecr.aws/amazonlinux/amazonlinux:2022'
+    const baseImage = 'public.ecr.aws/amazonlinux/amazonlinux:2023'
     const container = taskDef.addContainer('flask-app', {
       image: ecs.ContainerImage.fromRegistry(baseImage),
       memoryLimitMiB: 256,
