@@ -46,7 +46,7 @@ export class EcsCdkStack extends cdk.Stack {
         // Add more subnet configurations as needed for private and isolated subnets
       ],
       natGateways: 1,
-      maxAzs: 3 /* does a sample need 3 az's? */
+      maxAzs: 1 /* does a sample need 3 az's? */
     });
 
 
