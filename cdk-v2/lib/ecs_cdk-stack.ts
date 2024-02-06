@@ -108,10 +108,14 @@ export class EcsCdkStack extends cdk.Stack {
       protocol: ecs.Protocol.TCP
     });
 
+    // ECS Fargate service
+    const privateSubnets = vpc.selectSubnets({
+      subnetType: ec2.SubnetType.PRIVATE,
+    });
     const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "ecs-service", {
       cluster: cluster,
       taskDefinition: taskDef,
-      publicLoadBalancer: true,
+      vpcSubnets: privateSubnets,
       desiredCount: 1,
       listenerPort: 80
     });
