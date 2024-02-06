@@ -43,6 +43,11 @@ export class EcsCdkStack extends cdk.Stack {
           name: 'public',
           subnetType: ec2.SubnetType.PUBLIC,
         },
+        {
+          cidrMask: 24,
+          name: 'private',
+          subnetType: ec2.SubnetType.PRIVATE,
+        },
         // Add more subnet configurations as needed for private and isolated subnets
       ],
       natGateways: 1,
