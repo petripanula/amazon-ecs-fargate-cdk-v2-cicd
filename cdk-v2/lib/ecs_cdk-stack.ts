@@ -35,7 +35,7 @@ export class EcsCdkStack extends cdk.Stack {
 
     /**
      * create a new vpc with single nat gateway
-     */
+    */
     const vpc = new ec2.Vpc(this, 'ecs-cdk-vpc', {
       subnetConfiguration: [
         {
@@ -43,15 +43,10 @@ export class EcsCdkStack extends cdk.Stack {
           name: 'public',
           subnetType: ec2.SubnetType.PUBLIC,
         },
-        {
-          cidrMask: 24,
-          name: 'private',
-          subnetType: ec2.SubnetType.PRIVATE,
-        },
         // Add more subnet configurations as needed for private and isolated subnets
       ],
-      natGateways: 1,
-      maxAzs: 1 /* does a sample need 3 az's? */
+      //natGateways: 1,
+      maxAzs: 2 /* does a sample need 3 az's? */
     });
 
 
@@ -95,7 +90,7 @@ export class EcsCdkStack extends cdk.Stack {
 
     taskDef.addToExecutionRolePolicy(executionRolePolicy);
 
-    const baseImage = 'public.ecr.aws/amazonlinux/amazonlinux:2023'
+    const baseImage = '436062882310.dkr.ecr.eu-north-1.amazonaws.com/ecscdkstack-ecrrepo714fb1b2-p8ol0vv4z09x:latest'
     const container = taskDef.addContainer('flask-app', {
       image: ecs.ContainerImage.fromRegistry(baseImage),
       memoryLimitMiB: 256,
@@ -109,13 +104,11 @@ export class EcsCdkStack extends cdk.Stack {
     });
 
     // ECS Fargate service
-    const privateSubnets = vpc.selectSubnets({
-      subnetType: ec2.SubnetType.PRIVATE,
-    });
     const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "ecs-service", {
       cluster: cluster,
+      assignPublicIp: true,
       taskDefinition: taskDef,
-      vpcSubnets: privateSubnets,
+      publicLoadBalancer: true,
       desiredCount: 1,
       listenerPort: 80
     });
